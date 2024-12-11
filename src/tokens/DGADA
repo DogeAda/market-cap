@@ -1,0 +1,19 @@
+import { defaultFetcherOptions, SupplyFetcher } from "../types";
+import { getAmountInAddresses, getBlockFrostInstance } from "../utils";
+
+const DGADA = "b4273f1d8d0021d188784c3d72dc514f602b7ab8cfb87e3134550c42";
+
+const fetcher: SupplyFetcher = async (options = defaultFetcherOptions) => {
+  const blockFrost = getBlockFrostInstance(options);
+  const total = 1e12; // 1 trillion
+  const treasuryRaw = await getAmountInAddresses(blockFrost, DGADA, [
+    "addr1qyeegmvuvpqznhdd7q9nqxgvltmufm99r0eqeqc3lpzynjn9e7a6tg00g4f3975gtqktwzjfemt0sd4snmpeuwwutjys83tdc2",
+  ]);
+  const treasury = Number(treasuryRaw) / 1e3;
+  return {
+    circulating: (total - treasury).toString(),
+    total: total.toString(),
+  };
+};
+
+export default fetcher;
